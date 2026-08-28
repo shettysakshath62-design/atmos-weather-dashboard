@@ -2949,3 +2949,183 @@ body.fog-weather .mist {
     }
 
 }
+/* =====================================================
+   MOBILE RESPONSIVE FIX — THIRANEX TASK 4
+   ===================================================== */
+
+* {
+    box-sizing: border-box;
+}
+
+html,
+body {
+    width: 100%;
+    max-width: 100%;
+    overflow-x: hidden;
+}
+
+.app {
+    width: 100%;
+    max-width: 100%;
+    padding-left: 16px;
+    padding-right: 16px;
+}
+
+.search-panel,
+.search-section,
+.search-box {
+    width: 100%;
+    max-width: 100%;
+}
+
+.search-box {
+    display: flex;
+}
+
+.search-box input {
+    min-width: 0;
+    width: 100%;
+}
+
+.location-btn {
+    max-width: 100%;
+}
+
+.weather-dashboard,
+.main-card,
+.metrics-grid,
+.quick-section,
+.quick-grid,
+.features-section,
+.feature-grid,
+.flow-section,
+.flow-grid,
+.bottom-banner {
+    max-width: 100%;
+}
+
+@media (max-width: 768px) {
+
+    .app {
+        padding-left: 12px;
+        padding-right: 12px;
+    }
+
+    .header {
+        flex-wrap: wrap;
+        gap: 15px;
+    }
+
+    .search-section {
+        flex-direction: column;
+        gap: 12px;
+    }
+
+    .search-box {
+        width: 100%;
+        min-width: 0;
+    }
+
+    .search-box input {
+        min-width: 0;
+        width: 100%;
+    }
+
+    .search-box button {
+        flex-shrink: 0;
+    }
+
+    .location-btn {
+        width: 100%;
+    }
+
+    .weather-content {
+        flex-wrap: wrap;
+    }
+
+    .metrics-grid,
+    .quick-grid,
+    .feature-grid {
+        grid-template-columns: 1fr;
+    }
+
+    .flow-grid {
+        grid-template-columns: 1fr;
+    }
+
+    .flow-line {
+        display: none;
+    }
+
+    .bottom-banner {
+        flex-direction: column;
+        gap: 20px;
+    }
+}
+
+@media (max-width: 480px) {
+
+    .app {
+        padding-left: 10px;
+        padding-right: 10px;
+    }
+
+    .search-box {
+        flex-wrap: wrap;
+    }
+
+    .search-box input {
+        width: 100%;
+        flex: 1 1 100%;
+    }
+
+    .search-box button {
+        width: 100%;
+    }
+
+    .temperature {
+        font-size: 3rem;
+    }
+
+    .main-card {
+        padding: 18px;
+    }
+
+    .card-top {
+        flex-wrap: wrap;
+        gap: 15px;
+    }
+}
+/* =====================================================
+   DESKTOP DESIGN RESTORE
+   ===================================================== */
+
+@media (min-width: 769px) {
+
+    .app {
+        width: 100%;
+        max-width: 1200px;
+        margin: 0 auto;
+        padding-left: 24px;
+        padding-right: 24px;
+    }
+
+    .search-panel,
+    .weather-dashboard,
+    .quick-section,
+    .features-section,
+    .flow-section,
+    .bottom-banner {
+        width: 100%;
+    }
+
+    .metrics-grid,
+    .quick-grid,
+    .feature-grid {
+        width: 100%;
+    }
+
+    .main-card {
+        width: 100%;
+    }
+}
