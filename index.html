@@ -1,0 +1,985 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+
+    <meta charset="UTF-8">
+
+    <meta
+        name="viewport"
+        content="width=device-width, initial-scale=1.0"
+    >
+
+    <title>
+        ATMOS — Weather Intelligence
+    </title>
+
+    <link
+        rel="stylesheet"
+        href="style.css"
+    >
+
+</head>
+
+
+<body>
+
+
+    <!-- =========================================
+         MOVING WEATHER BACKGROUND
+    ========================================== -->
+
+    <div
+        id="weatherAnimation"
+        class="weather-animation"
+        aria-hidden="true"
+    >
+
+        <!-- SUN -->
+
+        <div
+            class="sun"
+            id="sun"
+        ></div>
+
+
+        <!-- MOVING CLOUDS -->
+
+        <div class="cloud cloud-one"></div>
+
+        <div class="cloud cloud-two"></div>
+
+        <div class="cloud cloud-three"></div>
+
+        <div class="cloud cloud-four"></div>
+
+
+        <!-- MIST -->
+
+        <div class="mist mist-one"></div>
+
+        <div class="mist mist-two"></div>
+
+
+        <!-- RAIN -->
+
+        <div
+            class="rain-container"
+            id="rainContainer"
+        ></div>
+
+
+        <!-- ATMOSPHERIC PARTICLES -->
+
+        <div
+            class="weather-particles"
+            id="weatherParticles"
+        ></div>
+
+
+        <!-- LIGHTNING -->
+
+        <div
+            class="lightning"
+            id="lightning"
+        ></div>
+
+    </div>
+
+
+
+    <!-- =========================================
+         BACKGROUND LIGHT EFFECTS
+    ========================================== -->
+
+    <div class="background-glow glow-one"></div>
+
+    <div class="background-glow glow-two"></div>
+
+
+
+    <!-- =========================================
+         APPLICATION
+    ========================================== -->
+
+    <main class="app">
+
+
+        <!-- =====================================
+             HEADER
+        ====================================== -->
+
+        <header class="header">
+
+
+            <div class="brand">
+
+                <div class="brand-symbol">
+                    ◈
+                </div>
+
+
+                <div>
+
+                    <h1>
+                        ATMOS
+                    </h1>
+
+                    <p>
+                        WEATHER INTELLIGENCE
+                    </p>
+
+                </div>
+
+            </div>
+
+
+            <div class="live-status">
+
+                <span></span>
+
+                LIVE WEATHER
+
+            </div>
+
+
+        </header>
+
+
+
+        <!-- =====================================
+             SEARCH CARD
+        ====================================== -->
+
+        <section class="search-panel">
+
+
+            <div class="search-title">
+
+                <span>
+                    LIVE ATMOSPHERIC DATA
+                </span>
+
+                <h2>
+                    Explore the weather
+                </h2>
+
+            </div>
+
+
+            <div class="search-section">
+
+
+                <div class="search-box">
+
+                    <span class="search-icon">
+                        ⌕
+                    </span>
+
+
+                    <input
+                        type="text"
+                        id="cityInput"
+                        placeholder="Search city..."
+                        autocomplete="off"
+                    >
+
+
+                    <button
+                        id="searchBtn"
+                        type="button"
+                    >
+                        SEARCH
+                    </button>
+
+                </div>
+
+
+                <button
+                    id="locationBtn"
+                    class="location-btn"
+                    type="button"
+                >
+
+                    ◉
+
+                    MY LOCATION
+
+                </button>
+
+
+            </div>
+
+        </section>
+
+
+
+        <!-- ERROR -->
+
+        <div
+            id="errorMessage"
+            class="error-message"
+        ></div>
+
+
+
+        <!-- LOADING -->
+
+        <div
+            id="loading"
+            class="loading"
+        >
+
+            <div class="loader"></div>
+
+            <p>
+                Fetching weather...
+            </p>
+
+        </div>
+
+
+
+        <!-- =====================================
+             MAIN WEATHER
+        ====================================== -->
+
+        <section
+            id="weatherDashboard"
+            class="weather-dashboard"
+        >
+
+
+            <!-- =================================
+                 HERO WEATHER CARD
+            ================================== -->
+
+            <div class="main-card">
+
+
+                <div class="card-top">
+
+
+                    <div class="location">
+
+                        <span class="location-icon">
+                            ⌖
+                        </span>
+
+
+                        <div>
+
+                            <h2 id="cityName">
+                                Mangalore
+                            </h2>
+
+                            <p id="countryName">
+                                India
+                            </p>
+
+                        </div>
+
+                    </div>
+
+
+                    <div class="weather-time">
+
+                        <span>
+                            LOCAL TIME
+                        </span>
+
+                        <strong id="localTime">
+                            --:--
+                        </strong>
+
+                    </div>
+
+
+                </div>
+
+
+
+                <!-- WEATHER CENTER -->
+
+                <div class="weather-content">
+
+
+                    <div class="weather-visual">
+
+                        <div class="weather-orb"></div>
+
+
+                        <div
+                            id="weatherIcon"
+                            class="weather-icon"
+                        >
+                            ☀️
+                        </div>
+
+                    </div>
+
+
+
+                    <div class="temperature-section">
+
+
+                        <div class="temperature">
+
+                            <span id="temperature">
+                                --
+                            </span>
+
+                            <sup>
+                                °C
+                            </sup>
+
+                        </div>
+
+
+                        <div class="weather-status">
+
+                            <span class="status-dot"></span>
+
+                            <h3 id="weatherDescription">
+                                Waiting for weather data
+                            </h3>
+
+                        </div>
+
+
+                    </div>
+
+
+                </div>
+
+
+
+                <!-- WEATHER CARD FOOTER -->
+
+                <div class="card-footer">
+
+                    <span>
+                        UPDATED
+                    </span>
+
+
+                    <strong id="lastUpdated">
+                        --
+                    </strong>
+
+                </div>
+
+
+            </div>
+
+
+
+            <!-- =================================
+                 WEATHER METRIC CARDS
+            ================================== -->
+
+            <div class="metrics-grid">
+
+
+                <!-- HUMIDITY -->
+
+                <div class="metric-card">
+
+                    <div class="metric-header">
+
+                        <span class="metric-icon">
+                            💧
+                        </span>
+
+                        <span>
+                            HUMIDITY
+                        </span>
+
+                    </div>
+
+
+                    <div class="metric-value">
+
+                        <strong id="humidity">
+                            --
+                        </strong>
+
+                        <small>
+                            %
+                        </small>
+
+                    </div>
+
+
+                    <p>
+                        Atmospheric moisture
+                    </p>
+
+                </div>
+
+
+
+                <!-- WIND -->
+
+                <div class="metric-card">
+
+                    <div class="metric-header">
+
+                        <span class="metric-icon">
+                            💨
+                        </span>
+
+                        <span>
+                            WIND
+                        </span>
+
+                    </div>
+
+
+                    <div class="metric-value">
+
+                        <strong id="windSpeed">
+                            --
+                        </strong>
+
+                        <small>
+                            km/h
+                        </small>
+
+                    </div>
+
+
+                    <p>
+                        Current wind speed
+                    </p>
+
+                </div>
+
+
+
+                <!-- COORDINATES -->
+
+                <div class="metric-card">
+
+                    <div class="metric-header">
+
+                        <span class="metric-icon">
+                            📍
+                        </span>
+
+                        <span>
+                            LOCATION
+                        </span>
+
+                    </div>
+
+
+                    <div
+                        class="coordinate-value"
+                        id="coordinates"
+                    >
+                        --
+                    </div>
+
+
+                    <p>
+                        Latitude / Longitude
+                    </p>
+
+                </div>
+
+
+
+                <!-- DATA SOURCE -->
+
+                <div class="metric-card">
+
+                    <div class="metric-header">
+
+                        <span class="metric-icon">
+                            ◉
+                        </span>
+
+                        <span>
+                            DATA
+                        </span>
+
+                    </div>
+
+
+                    <div class="source-value">
+
+                        OPEN-METEO
+
+                    </div>
+
+
+                    <p>
+                        Live REST API
+                    </p>
+
+                </div>
+
+
+            </div>
+
+
+        </section>
+
+
+
+        <!-- =====================================
+     QUICK WEATHER CARDS
+====================================== -->
+
+<section class="quick-section">
+
+    <div class="section-title">
+
+        <span>
+            ATMOSPHERIC SNAPSHOT
+        </span>
+
+        <h2>
+            Current conditions
+        </h2>
+
+    </div>
+
+
+    <div class="quick-grid">
+
+
+        <!-- TEMPERATURE -->
+
+        <div class="quick-card">
+
+            <span class="quick-icon">
+                🌡️
+            </span>
+
+            <div>
+
+                <strong>
+                    Temperature
+                </strong>
+
+                <p id="quickTemperature">
+                    -- °C • Waiting for data
+                </p>
+
+            </div>
+
+        </div>
+
+
+
+        <!-- HUMIDITY -->
+
+        <div class="quick-card">
+
+            <span class="quick-icon">
+                💦
+            </span>
+
+            <div>
+
+                <strong>
+                    Moisture
+                </strong>
+
+                <p id="quickHumidity">
+                    --% • Waiting for data
+                </p>
+
+            </div>
+
+        </div>
+
+
+
+        <!-- WIND -->
+
+        <div class="quick-card">
+
+            <span class="quick-icon">
+                🌬️
+            </span>
+
+            <div>
+
+                <strong>
+                    Air Movement
+                </strong>
+
+                <p id="quickWind">
+                    -- km/h • Waiting for data
+                </p>
+
+            </div>
+
+        </div>
+
+
+
+        <!-- CONDITIONS -->
+
+        <div class="quick-card">
+
+            <span class="quick-icon">
+                ☁️
+            </span>
+
+            <div>
+
+                <strong>
+                    Conditions
+                </strong>
+
+                <p id="quickCondition">
+                    Waiting for weather data
+                </p>
+
+            </div>
+
+        </div>
+
+
+    </div>
+
+</section>
+
+
+
+        <!-- =====================================
+             WEATHER FEATURES
+        ====================================== -->
+
+        <section class="features-section">
+
+
+            <div class="section-title">
+
+                <span>
+                    ATMOS FEATURES
+                </span>
+
+                <h2>
+                    Everything at a glance
+                </h2>
+
+            </div>
+
+
+            <div class="feature-grid">
+
+
+                <div class="feature-card">
+
+                    <div class="feature-top">
+
+                        <span>
+                            01
+                        </span>
+
+                        <strong>
+                            🌍
+                        </strong>
+
+                    </div>
+
+
+                    <h3>
+                        Global Search
+                    </h3>
+
+
+                    <p>
+                        Search weather conditions
+                        for cities worldwide.
+                    </p>
+
+                </div>
+
+
+
+                <div class="feature-card">
+
+                    <div class="feature-top">
+
+                        <span>
+                            02
+                        </span>
+
+                        <strong>
+                            ⚡
+                        </strong>
+
+                    </div>
+
+
+                    <h3>
+                        Live API
+                    </h3>
+
+
+                    <p>
+                        Weather information is
+                        fetched dynamically.
+                    </p>
+
+                </div>
+
+
+
+                <div class="feature-card">
+
+                    <div class="feature-top">
+
+                        <span>
+                            03
+                        </span>
+
+                        <strong>
+                            🎨
+                        </strong>
+
+                    </div>
+
+
+                    <h3>
+                        Dynamic Visuals
+                    </h3>
+
+
+                    <p>
+                        The background responds
+                        to current weather.
+                    </p>
+
+                </div>
+
+
+
+                <div class="feature-card">
+
+                    <div class="feature-top">
+
+                        <span>
+                            04
+                        </span>
+
+                        <strong>
+                            📡
+                        </strong>
+
+                    </div>
+
+
+                    <h3>
+                        Real-Time Data
+                    </h3>
+
+
+                    <p>
+                        Weather metrics update
+                        from live API responses.
+                    </p>
+
+                </div>
+
+
+            </div>
+
+        </section>
+
+
+
+        <!-- =====================================
+             WEATHER FLOW
+        ====================================== -->
+
+        <section class="flow-section">
+
+
+            <div class="section-title">
+
+                <span>
+                    WEATHER INTELLIGENCE
+                </span>
+
+                <h2>
+                    How ATMOS works
+                </h2>
+
+            </div>
+
+
+            <div class="flow-grid">
+
+
+                <div class="flow-card">
+
+                    <span>
+                        01
+                    </span>
+
+                    <strong>
+                        SEARCH
+                    </strong>
+
+                    <small>
+                        Choose a city
+                    </small>
+
+                </div>
+
+
+                <div class="flow-line"></div>
+
+
+                <div class="flow-card">
+
+                    <span>
+                        02
+                    </span>
+
+                    <strong>
+                        FETCH
+                    </strong>
+
+                    <small>
+                        Request API data
+                    </small>
+
+                </div>
+
+
+                <div class="flow-line"></div>
+
+
+                <div class="flow-card">
+
+                    <span>
+                        03
+                    </span>
+
+                    <strong>
+                        PROCESS
+                    </strong>
+
+                    <small>
+                        Parse JSON
+                    </small>
+
+                </div>
+
+
+                <div class="flow-line"></div>
+
+
+                <div class="flow-card">
+
+                    <span>
+                        04
+                    </span>
+
+                    <strong>
+                        VISUALIZE
+                    </strong>
+
+                    <small>
+                        Show live weather
+                    </small>
+
+                </div>
+
+
+            </div>
+
+        </section>
+
+
+
+        <!-- =====================================
+             BOTTOM WEATHER BANNER
+        ====================================== -->
+
+        <section class="bottom-banner">
+
+
+            <div>
+
+                <span>
+                    ATMOSPHERIC DATA
+                </span>
+
+                <h2>
+                    Weather is always moving.
+                </h2>
+
+                <p>
+                    Live data. Dynamic visuals.
+                    One intelligent dashboard.
+                </p>
+
+            </div>
+
+
+            <div class="banner-symbol">
+                ☁️
+            </div>
+
+
+        </section>
+
+
+
+        <!-- =====================================
+             FOOTER
+        ====================================== -->
+
+        <footer>
+
+
+            <div class="footer-brand">
+
+                <strong>
+                    ATMOS
+                </strong>
+
+                <span>
+                    WEATHER INTELLIGENCE
+                </span>
+
+            </div>
+
+
+            <p>
+
+                Powered by Open-Meteo
+
+                <span>
+                    •
+                </span>
+
+                Built with HTML, CSS & JavaScript
+
+            </p>
+
+
+        </footer>
+
+
+    </main>
+
+
+
+    <!-- JAVASCRIPT -->
+
+    <script src="script.js"></script>
+
+
+</body>
+
+</html>
