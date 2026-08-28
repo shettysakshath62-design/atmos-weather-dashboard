@@ -1,6 +1,6 @@
 // =====================================================
 // ATMOS — WEATHER INTELLIGENCE
-// Complete JavaScript
+// Task 4 — Asynchronous JavaScript & RESTful APIs
 // Powered by Open-Meteo
 // =====================================================
 
@@ -37,7 +37,7 @@ const weatherParticles = document.getElementById("weatherParticles");
 
 
 // =====================================================
-// QUICK WEATHER CARD ELEMENTS
+// QUICK WEATHER CARDS
 // =====================================================
 
 const quickTemperature =
@@ -110,11 +110,7 @@ function getWeatherInfo(code) {
         };
     }
 
-    if (
-        code === 51 ||
-        code === 53 ||
-        code === 55
-    ) {
+    if (code === 51 || code === 53 || code === 55) {
         return {
             description: "Drizzle",
             icon: "🌦️",
@@ -122,10 +118,7 @@ function getWeatherInfo(code) {
         };
     }
 
-    if (
-        code === 56 ||
-        code === 57
-    ) {
+    if (code === 56 || code === 57) {
         return {
             description: "Freezing drizzle",
             icon: "🌧️",
@@ -133,11 +126,7 @@ function getWeatherInfo(code) {
         };
     }
 
-    if (
-        code === 61 ||
-        code === 63 ||
-        code === 65
-    ) {
+    if (code === 61 || code === 63 || code === 65) {
         return {
             description: "Rain",
             icon: "🌧️",
@@ -145,10 +134,7 @@ function getWeatherInfo(code) {
         };
     }
 
-    if (
-        code === 66 ||
-        code === 67
-    ) {
+    if (code === 66 || code === 67) {
         return {
             description: "Freezing rain",
             icon: "🌧️",
@@ -156,12 +142,7 @@ function getWeatherInfo(code) {
         };
     }
 
-    if (
-        code === 71 ||
-        code === 73 ||
-        code === 75 ||
-        code === 77
-    ) {
+    if (code === 71 || code === 73 || code === 75 || code === 77) {
         return {
             description: "Snow",
             icon: "❄️",
@@ -169,11 +150,7 @@ function getWeatherInfo(code) {
         };
     }
 
-    if (
-        code === 80 ||
-        code === 81 ||
-        code === 82
-    ) {
+    if (code === 80 || code === 81 || code === 82) {
         return {
             description: "Rain showers",
             icon: "🌦️",
@@ -181,10 +158,7 @@ function getWeatherInfo(code) {
         };
     }
 
-    if (
-        code === 85 ||
-        code === 86
-    ) {
+    if (code === 85 || code === 86) {
         return {
             description: "Snow showers",
             icon: "🌨️",
@@ -200,10 +174,7 @@ function getWeatherInfo(code) {
         };
     }
 
-    if (
-        code === 96 ||
-        code === 99
-    ) {
+    if (code === 96 || code === 99) {
         return {
             description: "Thunderstorm with hail",
             icon: "⛈️",
@@ -228,9 +199,7 @@ searchBtn.addEventListener("click", function () {
     const city = cityInput.value.trim();
 
     if (city === "") {
-
         showError("Please enter a city name.");
-
         return;
     }
 
@@ -265,19 +234,40 @@ async function getWeatherByCity(city) {
     try {
 
         // -------------------------------------------------
-        // STEP 1 — GEOCODING
+        // GEOCODING
         // -------------------------------------------------
 
-        const geocodingURL =
+        let geocodingURL =
             GEOCODING_API +
             "?name=" +
             encodeURIComponent(city) +
-            "&count=1" +
+            "&count=10" +
             "&language=en" +
             "&format=json";
 
+
+        // -------------------------------------------------
+        // SPECIAL CASE:
+        // Mangalore must be searched in India.
+        // This prevents Open-Meteo from selecting
+        // Mangalore, Tasmania, Australia.
+        // -------------------------------------------------
+
+        if (city.trim().toLowerCase() === "mangalore") {
+
+            geocodingURL =
+                GEOCODING_API +
+                "?name=Mangalore" +
+                "&count=10" +
+                "&language=en" +
+                "&format=json" +
+                "&countryCode=IN";
+        }
+
+
         const locationResponse =
             await fetch(geocodingURL);
+
 
         if (!locationResponse.ok) {
 
@@ -286,8 +276,10 @@ async function getWeatherByCity(city) {
             );
         }
 
+
         const locationData =
             await locationResponse.json();
+
 
         if (
             !locationData.results ||
@@ -299,20 +291,49 @@ async function getWeatherByCity(city) {
             );
         }
 
-        const location =
+
+        // -------------------------------------------------
+        // SELECT LOCATION
+        // -------------------------------------------------
+
+        let location =
             locationData.results[0];
 
 
         // -------------------------------------------------
-        // STEP 2 — WEATHER API
+        // EXTRA SAFETY FOR MANGALORE
+        // -------------------------------------------------
+
+        if (city.trim().toLowerCase() === "mangalore") {
+
+            const indianLocation =
+                locationData.results.find(function (result) {
+
+                    return (
+                        result.country_code === "IN" &&
+                        result.name &&
+                        result.name.toLowerCase() === "mangalore"
+                    );
+
+                });
+
+
+            if (indianLocation) {
+                location = indianLocation;
+            }
+        }
+
+
+        // -------------------------------------------------
+        // WEATHER API
         // -------------------------------------------------
 
         const weatherURL =
             WEATHER_API +
             "?latitude=" +
-            location.latitude +
+            encodeURIComponent(location.latitude) +
             "&longitude=" +
-            location.longitude +
+            encodeURIComponent(location.longitude) +
             "&current=" +
             "temperature_2m," +
             "relative_humidity_2m," +
@@ -320,8 +341,10 @@ async function getWeatherByCity(city) {
             "weather_code" +
             "&timezone=auto";
 
+
         const weatherResponse =
             await fetch(weatherURL);
+
 
         if (!weatherResponse.ok) {
 
@@ -330,12 +353,13 @@ async function getWeatherByCity(city) {
             );
         }
 
+
         const weatherData =
             await weatherResponse.json();
 
 
         // -------------------------------------------------
-        // STEP 3 — DISPLAY
+        // DISPLAY WEATHER
         // -------------------------------------------------
 
         displayWeather(
@@ -345,7 +369,7 @@ async function getWeatherByCity(city) {
 
 
         // -------------------------------------------------
-        // SAVE LAST CITY
+        // SAVE LAST SEARCHED CITY
         // -------------------------------------------------
 
         localStorage.setItem(
@@ -382,13 +406,11 @@ async function getWeatherByCity(city) {
 // DISPLAY WEATHER
 // =====================================================
 
-function displayWeather(
-    location,
-    weatherData
-) {
+function displayWeather(location, weatherData) {
 
     const current =
         weatherData.current;
+
 
     if (!current) {
 
@@ -423,12 +445,14 @@ function displayWeather(
     let countryText =
         location.country || "";
 
+
     if (location.admin1) {
 
         countryText +=
             " • " +
             location.admin1;
     }
+
 
     countryName.textContent =
         countryText;
@@ -443,6 +467,7 @@ function displayWeather(
             current.temperature_2m
         );
 
+
     temperature.textContent =
         currentTemperature;
 
@@ -456,6 +481,7 @@ function displayWeather(
             current.relative_humidity_2m
         );
 
+
     humidity.textContent =
         currentHumidity;
 
@@ -468,6 +494,7 @@ function displayWeather(
         Math.round(
             current.wind_speed_10m
         );
+
 
     windSpeed.textContent =
         currentWind;
@@ -501,7 +528,7 @@ function displayWeather(
 
 
     // -------------------------------------------------
-    // UPDATE QUICK WEATHER CARDS
+    // QUICK WEATHER CARDS
     // -------------------------------------------------
 
     updateQuickCards(
@@ -564,8 +591,6 @@ function updateQuickCards(
     weatherInfo
 ) {
 
-    // Temperature card
-
     if (quickTemperature) {
 
         quickTemperature.textContent =
@@ -573,8 +598,6 @@ function updateQuickCards(
             " °C • Live surface temperature";
     }
 
-
-    // Humidity card
 
     if (quickHumidity) {
 
@@ -584,8 +607,6 @@ function updateQuickCards(
     }
 
 
-    // Wind card
-
     if (quickWind) {
 
         quickWind.textContent =
@@ -593,8 +614,6 @@ function updateQuickCards(
             " km/h • Current wind activity";
     }
 
-
-    // Conditions card
 
     if (quickCondition) {
 
@@ -620,8 +639,10 @@ function updateLocalTime(weatherData) {
         const timeString =
             weatherData.current.time;
 
+
         const timePart =
             timeString.split("T")[1];
+
 
         if (timePart) {
 
@@ -629,9 +650,7 @@ function updateLocalTime(weatherData) {
                 timePart.substring(0, 5);
         }
 
-    }
-
-    else {
+    } else {
 
         localTime.textContent =
             "--:--";
@@ -653,12 +672,11 @@ function setWeatherMode(className) {
         "fog-weather"
     );
 
+
     document.body.classList.add(
         className
     );
 
-
-    // Create rain when required
 
     if (
         className === "rainy-weather" ||
@@ -667,9 +685,7 @@ function setWeatherMode(className) {
 
         createRain();
 
-    }
-
-    else {
+    } else {
 
         clearRain();
     }
@@ -686,9 +702,12 @@ function createRain() {
         return;
     }
 
+
     rainContainer.innerHTML = "";
 
+
     const numberOfDrops = 90;
+
 
     for (
         let i = 0;
@@ -698,6 +717,7 @@ function createRain() {
 
         const drop =
             document.createElement("div");
+
 
         drop.className =
             "raindrop";
@@ -754,9 +774,12 @@ function createParticles() {
         return;
     }
 
+
     weatherParticles.innerHTML = "";
 
+
     const numberOfParticles = 25;
+
 
     for (
         let i = 0;
@@ -766,6 +789,7 @@ function createParticles() {
 
         const particle =
             document.createElement("div");
+
 
         particle.className =
             "particle";
@@ -805,14 +829,17 @@ function createParticles() {
 
 function showLoading(show) {
 
+    if (!loading) {
+        return;
+    }
+
+
     if (show) {
 
         loading.style.display =
             "block";
 
-    }
-
-    else {
+    } else {
 
         loading.style.display =
             "none";
@@ -826,6 +853,10 @@ function showLoading(show) {
 
 function showError(message) {
 
+    if (!errorMessage) {
+        return;
+    }
+
     errorMessage.textContent =
         message;
 }
@@ -836,6 +867,10 @@ function showError(message) {
 // =====================================================
 
 function clearError() {
+
+    if (!errorMessage) {
+        return;
+    }
 
     errorMessage.textContent =
         "";
@@ -851,6 +886,7 @@ locationBtn.addEventListener(
     function () {
 
         clearError();
+
 
         if (!navigator.geolocation) {
 
@@ -872,6 +908,7 @@ locationBtn.addEventListener(
                 const latitude =
                     position.coords.latitude;
 
+
                 const longitude =
                     position.coords.longitude;
 
@@ -880,12 +917,13 @@ locationBtn.addEventListener(
                     latitude,
                     longitude
                 );
-
             },
+
 
             function (error) {
 
                 showLoading(false);
+
 
                 if (
                     error.code ===
@@ -896,9 +934,7 @@ locationBtn.addEventListener(
                         "Location permission was denied. Please allow location access in Chrome."
                     );
 
-                }
-
-                else if (
+                } else if (
                     error.code ===
                     error.POSITION_UNAVAILABLE
                 ) {
@@ -907,9 +943,7 @@ locationBtn.addEventListener(
                         "Your location could not be determined."
                     );
 
-                }
-
-                else {
+                } else {
 
                     showError(
                         "Unable to get your location."
@@ -939,9 +973,9 @@ async function getWeatherByCoordinates(
         const weatherURL =
             WEATHER_API +
             "?latitude=" +
-            latitude +
+            encodeURIComponent(latitude) +
             "&longitude=" +
-            longitude +
+            encodeURIComponent(longitude) +
             "&current=" +
             "temperature_2m," +
             "relative_humidity_2m," +
@@ -973,9 +1007,9 @@ async function getWeatherByCoordinates(
         const reverseURL =
             GEOCODING_API +
             "?latitude=" +
-            latitude +
+            encodeURIComponent(latitude) +
             "&longitude=" +
-            longitude +
+            encodeURIComponent(longitude) +
             "&count=1" +
             "&language=en" +
             "&format=json";
@@ -1034,13 +1068,16 @@ async function getWeatherByCoordinates(
             error
         );
 
+
         showError(
             error.message ||
             "Unable to retrieve weather for your location."
         );
 
+
         weatherDashboard.style.display =
             "none";
+
     }
 
     finally {
@@ -1067,15 +1104,18 @@ function loadLastCity() {
         cityInput.value =
             savedCity;
 
+
         getWeatherByCity(
             savedCity
         );
 
-    }
-
-    else {
+    } else {
 
         // Default city
+
+        cityInput.value =
+            "Mangalore";
+
 
         getWeatherByCity(
             "Mangalore"
